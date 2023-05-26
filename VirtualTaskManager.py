@@ -2,6 +2,7 @@ from tkinter import *
 from gtts import gTTS
 import pygame as pg
 import speech_recognition as sr
+import os 
 r = sr.Recognizer()
 
 count = 1
@@ -23,13 +24,22 @@ def speakFile():
         strText += i
     speak(strText)
 
-
 def speak(text):
     obj = gTTS(text=text, lang="en", slow=False)
     obj.save("voice.mp3")
+    
     pg.mixer.init()
     pg.mixer.music.load("voice.mp3")
     pg.mixer.music.play()
+
+    # waiting for completing the audio
+    while pg.mixer.music.get_busy():
+        continue
+
+    # exiting the pygame to delete the audio file
+    pg.mixer.music.stop()
+    pg.mixer.quit()
+    os.remove("voice.mp3")
 
 
 def listen():
